@@ -1,0 +1,804 @@
+/**
+ * app.css
+ * 
+ * Application Layout, Apple Navigation Bar, Photo Hero Preview,
+ * Dual-Pane Grid, Before/After Comparison, and Bottom Action Bar.
+ * Sadece Aydınlık ve Karanlık modları destekler.
+ */
+
+/* App Container */
+.app-container {
+  flex: 1;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Düzenleyici aktif olduğunda üst sabit geri dön tuşu ve alt çubuk için dolgu */
+body.has-editor .app-container,
+.app-container.has-editor {
+  padding-top: 50px;
+  padding-bottom: 75px;
+  display: block;
+}
+
+/* ==========================================================================
+   1. iOS Navigation Bar (Kompakt, Modern, Asla Taşmayan Apple Toolbar)
+   ========================================================================== */
+.ios-navbar {
+  flex-shrink: 0;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  backdrop-filter: var(--ios-blur);
+  -webkit-backdrop-filter: var(--ios-blur);
+  background-color: rgba(242, 242, 247, 0.88);
+  border-bottom: 0.5px solid var(--ios-separator);
+  margin: 0;
+  /* Mobil uygulama safe area / durum çubuğu (pil, şebeke, saat, Dynamic Island/çentik) payı */
+  padding-top: var(--navbar-pad-top);
+  padding-left: max(20px, env(safe-area-inset-left, 0px));
+  padding-right: max(20px, env(safe-area-inset-right, 0px));
+  padding-bottom: var(--navbar-pad-bottom);
+  min-height: var(--navbar-total-height);
+  box-sizing: border-box;
+  overflow: hidden;
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+[data-theme="dark"] .ios-navbar {
+  background-color: rgba(18, 18, 20, 0.90);
+  border-bottom: 0.5px solid rgba(84, 84, 88, 0.40);
+}
+
+.ios-navbar-inner {
+  max-width: 1200px;
+  height: 48px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+}
+
+/* ==========================================================================
+   iOS Sabit Geri Dön Barı (Üst Barın Hemen Altında, Sayfa Aşağı Kaydırılsa Bile Sabit Kalan)
+   ========================================================================== */
+.ios-back-bar {
+  position: fixed;
+  top: var(--navbar-total-height);
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 995;
+  pointer-events: none; /* Boş alanlar alttaki tıklamaları engellemez */
+  padding: 6px 0;
+  box-sizing: border-box;
+  animation: fadeIn 0.25s ease;
+}
+
+body.has-editor .ios-back-bar {
+  display: block !important;
+}
+
+.ios-back-bar-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+}
+
+.ios-nav-back-btn {
+  pointer-events: auto; /* Tuş tıklanabilir */
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 32px;
+  background-color: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 0.5px solid rgba(0, 122, 255, 0.35);
+  color: var(--ios-blue);
+  font-family: var(--ios-font);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 0 13px 0 8px;
+  border-radius: var(--ios-radius-pill);
+  cursor: pointer;
+  user-select: none;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.10), 0 1px 3px rgba(0, 0, 0, 0.06);
+  transition: transform 0.15s var(--ios-spring), background-color 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+[data-theme="dark"] .ios-nav-back-btn {
+  background-color: rgba(32, 32, 36, 0.90);
+  border: 0.5px solid rgba(10, 132, 255, 0.45);
+  color: #0A84FF;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.40), 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+.ios-nav-back-btn:hover {
+  background-color: #ffffff;
+  box-shadow: 0 6px 18px rgba(0, 122, 255, 0.22);
+}
+
+[data-theme="dark"] .ios-nav-back-btn:hover {
+  background-color: rgba(44, 44, 48, 0.96);
+  box-shadow: 0 6px 20px rgba(10, 132, 255, 0.35);
+}
+
+.ios-nav-back-btn:active {
+  transform: scale(0.96);
+  opacity: 0.8;
+}
+
+.ios-nav-back-btn svg {
+  flex-shrink: 0;
+  stroke: var(--ios-blue);
+  transition: transform 0.15s ease;
+}
+
+.ios-nav-back-btn:hover svg {
+  transform: translateX(-2px);
+}
+
+@media (max-width: 520px) {
+  .ios-nav-title {
+    font-size: 14.5px;
+  }
+  .ios-nav-version {
+    font-size: 9.5px;
+    padding: 1px 5px;
+  }
+}
+
+@media (max-width: 400px) {
+  .ios-nav-back-btn span {
+    display: none;
+  }
+  .ios-nav-back-btn {
+    padding: 0 8px;
+  }
+}
+
+/* Marka Grubu: İkon Rozeti + Kalın Başlık */
+.ios-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  user-select: none;
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+.ios-nav-app-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 122, 255, 0.35);
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s var(--ios-spring);
+  background-color: #000000;
+}
+
+.ios-nav-app-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+}
+
+.ios-nav-brand:hover .ios-nav-app-icon {
+  transform: scale(1.05);
+}
+
+.ios-nav-titles {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.ios-nav-title {
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  line-height: 1;
+  color: var(--ios-label);
+  margin: 0;
+  white-space: nowrap;
+}
+
+.ios-nav-version {
+  font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  color: var(--ios-blue);
+  background: rgba(0, 122, 255, 0.12);
+  border: 1px solid rgba(0, 122, 255, 0.22);
+  padding: 2px 7px;
+  border-radius: 999px;
+  white-space: nowrap;
+  user-select: none;
+  line-height: 1.2;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .ios-nav-version {
+  color: #64D2FF;
+  background: rgba(10, 132, 255, 0.22);
+  border-color: rgba(100, 210, 255, 0.35);
+}
+
+/* Sağ Menü Eylemleri: Eşit Yükseklik ve Kusursuz Hizalama */
+.ios-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.privacy-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 30px;
+  background-color: var(--ios-input-bg);
+  border: 0.5px solid var(--ios-separator);
+  padding: 0 10px;
+  border-radius: var(--ios-radius-pill);
+  font-family: 'SF Pro Display', sans-serif;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--ios-secondary-label);
+  user-select: none;
+  white-space: nowrap;
+}
+
+.privacy-badge-icon {
+  font-size: 12px;
+}
+
+/* ==========================================================================
+   2. Empty State & iPhone Style Upload Area (Ekrana Tam Sığan, Sıfır Kaydırma)
+   ========================================================================== */
+.empty-state-view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  padding: 14px 16px calc(18px + env(safe-area-inset-bottom, 0px)) 16px;
+  overflow: hidden;
+  animation: fadeIn 0.35s ease;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.upload-card-zone {
+  background-color: var(--ios-card-bg);
+  border: 2px dashed var(--ios-input-border-focus);
+  border-radius: var(--ios-radius-xl);
+  padding: 22px 28px;
+  max-width: 480px;
+  width: 100%;
+  box-shadow: var(--ios-shadow-md);
+  cursor: pointer;
+  transition: all 0.25s var(--ios-spring);
+  position: relative;
+  box-sizing: border-box;
+}
+
+.upload-card-zone:hover,
+.upload-card-zone.drag-over {
+  border-color: var(--ios-blue);
+  background-color: var(--ios-blue-tint);
+  transform: translateY(-2px);
+  box-shadow: var(--ios-shadow-lg);
+}
+
+.upload-icon-bubble {
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 10px auto;
+  box-shadow: 0 4px 18px rgba(10, 132, 255, 0.28);
+  transition: transform 0.2s var(--ios-spring);
+  overflow: hidden;
+  background-color: #000000;
+}
+
+.upload-brand-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 16px;
+  display: block;
+}
+
+.upload-card-zone:hover .upload-icon-bubble {
+  transform: scale(1.06);
+  box-shadow: 0 6px 24px rgba(10, 132, 255, 0.45);
+}
+
+.upload-card-title {
+  font-family: 'SF Pro Display', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 6px;
+  letter-spacing: -0.4px;
+}
+
+.upload-card-desc {
+  font-family: 'SF Pro Display', sans-serif;
+  font-size: 13px;
+  color: var(--ios-secondary-label);
+  line-height: 1.35;
+  margin-bottom: 14px;
+}
+
+.upload-formats-row {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.sample-photos-row {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.sample-photos-label {
+  font-family: 'SF Pro Display', sans-serif;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--ios-secondary-label);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sample-photos-buttons {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+.sample-photos-buttons .ios-btn {
+  white-space: nowrap;
+  padding: 6px 14px;
+}
+
+.quality-guarantee-note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'SF Pro Display', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ios-secondary-label);
+  justify-content: center;
+  margin-top: 8px;
+}
+
+/* Ekran daraldığında üst menünün dışarı taşmasını %100 önleyen duyarlı kurallar */
+@media (max-width: 680px) {
+  .privacy-badge .privacy-badge-text {
+    display: none;
+  }
+  .privacy-badge {
+    padding: 0 7px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ios-navbar {
+    padding-top: var(--navbar-pad-top);
+    padding-bottom: var(--navbar-pad-bottom);
+    padding-left: max(12px, env(safe-area-inset-left, 0px));
+    padding-right: max(12px, env(safe-area-inset-right, 0px));
+  }
+  .empty-state-view {
+    padding-top: 18px;
+    padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  }
+  .privacy-badge {
+    display: none;
+  }
+  .theme-btn-text,
+  .theme-toggle-text {
+    display: none;
+  }
+  .ios-theme-toggle-btn {
+    padding: 0;
+    width: 32px;
+    min-width: 32px;
+    height: 32px;
+    border-radius: 50%;
+  }
+  .ios-theme-toggle-btn::before {
+    left: 14%;
+    right: 14%;
+    height: 42%;
+    border-radius: 50%;
+  }
+  .ios-theme-toggle-btn::after {
+    top: 3.5px;
+    left: 7px;
+    width: 7px;
+    height: 3px;
+    border-radius: 50%;
+  }
+  .ios-segment-btn {
+    padding: 3px 8px;
+  }
+  .ios-nav-title {
+    font-size: 14.5px;
+  }
+  .ios-nav-version {
+    font-size: 10px;
+  }
+  .sample-photos-buttons {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
+  .sample-photos-buttons .ios-btn {
+    padding: 5px 10px;
+    font-size: 11.5px;
+  }
+}
+
+/* Küçük dikey ekranlar için akıllı sığdırma (küçük dizüstü / pencereli kullanım) */
+@media (max-height: 640px) {
+  .ios-navbar {
+    min-height: var(--navbar-total-height);
+    padding-top: var(--navbar-pad-top);
+    padding-bottom: var(--navbar-pad-bottom);
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  .ios-back-bar {
+    top: var(--navbar-total-height);
+  }
+  .ios-nav-app-icon {
+    width: 26px;
+    height: 26px;
+    font-size: 13px;
+  }
+  .ios-nav-title {
+    font-size: 15px;
+  }
+  .empty-state-view {
+    padding: 4px 12px;
+    max-height: calc(100vh - 44px);
+  }
+  .upload-card-zone {
+    padding: 14px 20px;
+  }
+  .upload-icon-bubble {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
+  .upload-card-title {
+    font-size: 17px;
+    margin-bottom: 4px;
+  }
+  .upload-card-desc {
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+  .sample-photos-row {
+    margin-top: 8px;
+    gap: 4px;
+  }
+  .quality-guarantee-note {
+    margin-top: 6px;
+  }
+}
+
+/* ==========================================================================
+   3. Main Active Dual-Pane Editor Layout
+   ========================================================================== */
+.editor-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.35fr;
+  gap: 28px;
+  animation: fadeIn 0.4s ease;
+}
+
+@media (max-width: 960px) {
+  .editor-layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+/* Sol Sütun: Önizleme ve Tanı Bilgileri */
+.preview-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.hero-preview-card {
+  background-color: var(--ios-card-bg);
+  border-radius: var(--ios-radius-lg);
+  border: 0.5px solid var(--ios-separator);
+  box-shadow: var(--ios-shadow-md);
+  overflow: hidden;
+  position: relative;
+}
+
+.preview-image-container {
+  position: relative;
+  width: 100%;
+  min-height: 260px;
+  max-height: 480px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #000000;
+  overflow: hidden;
+}
+
+.preview-image {
+  max-width: 100%;
+  max-height: 480px;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.25s ease;
+}
+
+.preview-overlay-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background-color: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(10px);
+  color: #FFFFFF;
+  padding: 5px 12px;
+  border-radius: var(--ios-radius-pill);
+  font-family: 'SF Pro Display', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  border: 0.5px solid rgba(255, 255, 255, 0.2);
+}
+
+.preview-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-top: 0.5px solid var(--ios-separator);
+  background-color: var(--ios-card-bg);
+}
+
+/* Sağ Sütun: Ayarlar Editörü ve Karşılaştırma */
+.settings-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ==========================================================================
+   4. Öncesi / Sonrası Karşılaştırma Izgarası
+   ========================================================================== */
+.comparison-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background-color: var(--ios-separator);
+}
+
+.comparison-col {
+  background-color: var(--ios-card-bg);
+  padding: 14px 16px;
+}
+
+.comparison-col-header {
+  font-family: 'SF Pro Display', sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--ios-secondary-label);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.comparison-item {
+  margin-bottom: 10px;
+}
+
+.comparison-item:last-child {
+  margin-bottom: 0;
+}
+
+.comparison-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ios-tertiary-label);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.comparison-val {
+  font-family: 'SF Pro Display', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ios-label);
+  word-break: break-word;
+}
+
+.comparison-val.diff-changed {
+  color: var(--ios-blue);
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   5. Doğrulama Kartı
+   ========================================================================== */
+.verification-card {
+  padding: 16px;
+}
+
+.verification-status-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.verification-status-title {
+  font-family: 'SF Pro Display', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.verification-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.verification-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: var(--ios-radius-xs);
+  background-color: var(--ios-input-bg);
+}
+
+.verification-item.passed {
+  border-left: 3px solid var(--ios-green);
+}
+
+.verification-item.failed {
+  border-left: 3px solid var(--ios-red);
+}
+
+.verification-field-name {
+  font-weight: 600;
+  color: var(--ios-label);
+}
+
+.verification-field-val {
+  color: var(--ios-secondary-label);
+  font-size: 12px;
+}
+
+/* ==========================================================================
+   6. Sabit Alt Eylem Çubuğu (Kompakt ve Zarif)
+   ========================================================================== */
+.ios-bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  backdrop-filter: var(--ios-blur);
+  -webkit-backdrop-filter: var(--ios-blur);
+  background-color: rgba(242, 242, 247, 0.85);
+  border-top: 0.5px solid var(--ios-separator);
+  padding: 8px 16px calc(8px + env(safe-area-inset-bottom, 0px)) 16px;
+  box-shadow: 0 -3px 14px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="dark"] .ios-bottom-bar {
+  background-color: rgba(18, 18, 20, 0.88);
+  box-shadow: 0 -3px 18px rgba(0, 0, 0, 0.40);
+  border-top: 0.5px solid rgba(84, 84, 88, 0.35);
+}
+
+.ios-bottom-bar-inner {
+  max-width: 420px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Güvence Notu */
+.quality-guarantee-note {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'SF Pro Display', sans-serif;
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--ios-secondary-label);
+  justify-content: center;
+  margin-top: 3px;
+  opacity: 0.9;
+}
+
+/* Gizli Dosya Seçici */
+#file-input {
+  display: none;
+}
+
+/* ==========================================================================
+   7. Mobil Ana Ekrana Ekleme (PWA / Standalone) Ekran İndirme ve Dengeleme Kuralları
+   ========================================================================== */
+@media all and (display-mode: standalone), (display-mode: fullscreen) {
+  .empty-state-view {
+    padding-top: 26px;
+    padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px));
+  }
+  .upload-card-zone {
+    margin-top: 12px;
+  }
+}
+
+html.is-standalone .empty-state-view,
+body.is-standalone .empty-state-view {
+  padding-top: 26px;
+  padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px));
+}
+
+html.is-standalone .upload-card-zone,
+body.is-standalone .upload-card-zone {
+  margin-top: 12px;
+}
+

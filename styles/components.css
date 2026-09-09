@@ -1,0 +1,1075 @@
+/**
+ * components.css
+ * 
+ * Reusable Apple iOS Components: Grouped Cards, Settings Rows,
+ * Cupertino Inputs, Preset Chips, Dynamic Island Toast, and Buttons.
+ */
+
+/* ==========================================================================
+   1. iOS Buttons
+   ========================================================================== */
+.ios-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--ios-font);
+  font-size: 16px;
+  font-weight: 600;
+  padding: 12px 22px;
+  border-radius: var(--ios-radius-pill);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.15s var(--ios-spring), background-color 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.ios-btn:active {
+  transform: scale(0.96);
+}
+
+.ios-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Primary Filled Button (Apple Blue) */
+.ios-btn-primary {
+  background-color: var(--ios-blue);
+  color: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(0, 122, 255, 0.35);
+}
+
+.ios-btn-primary:hover:not(:disabled) {
+  background-color: var(--ios-blue-hover);
+  box-shadow: 0 6px 18px rgba(0, 122, 255, 0.45);
+}
+
+/* Secondary Tinted Button */
+.ios-btn-secondary {
+  background-color: var(--ios-blue-tint);
+  color: var(--ios-blue);
+}
+
+.ios-btn-secondary:hover:not(:disabled) {
+  background-color: var(--ios-blue-tint-active);
+}
+
+/* Subtle / Neutral Button */
+.ios-btn-subtle {
+  background-color: var(--ios-input-bg);
+  color: var(--ios-label);
+}
+
+.ios-btn-subtle:hover:not(:disabled) {
+  background-color: var(--ios-input-bg-focus);
+}
+
+/* Destructive / Red Button */
+.ios-btn-destructive {
+  background-color: var(--ios-red-tint);
+  color: var(--ios-red);
+}
+
+/* Small Button Variant */
+.ios-btn-sm {
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: var(--ios-radius-pill);
+}
+
+/* Large Hero Button */
+.ios-btn-lg {
+  font-size: 17px;
+  padding: 15px 28px;
+  width: 100%;
+}
+
+/* Liquid Glass Button (Zarif ve Kompakt Sıvı Cam Düğme) */
+.ios-btn-liquid-glass {
+  background: linear-gradient(180deg, rgba(10, 132, 255, 0.86) 0%, rgba(0, 105, 224, 0.82) 100%);
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.60);
+  box-shadow: 
+    0 6px 20px rgba(0, 122, 255, 0.30),
+    0 2px 6px rgba(0, 0, 0, 0.06),
+    inset 0 1px 1.5px rgba(255, 255, 255, 0.90),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(24px) saturate(190%);
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  padding: 8px 24px;
+  height: 38px;
+  border-radius: var(--ios-radius-pill);
+  transition: all 0.2s var(--ios-spring);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: auto;
+  min-width: 240px;
+}
+
+.ios-btn-liquid-glass:hover:not(:disabled) {
+  background: linear-gradient(180deg, rgba(20, 142, 255, 0.92) 0%, rgba(5, 118, 240, 0.88) 100%);
+  box-shadow: 
+    0 8px 26px rgba(0, 122, 255, 0.42),
+    0 2px 8px rgba(0, 0, 0, 0.08),
+    inset 0 1px 1.5px rgba(255, 255, 255, 0.98);
+  transform: translateY(-1px);
+}
+
+.ios-btn-liquid-glass:active:not(:disabled) {
+  transform: scale(0.97) translateY(0);
+  box-shadow: 0 3px 10px rgba(0, 122, 255, 0.25);
+}
+
+.save-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.save-btn-icon svg {
+  display: block;
+}
+
+/* ==========================================================================
+   Su Damlası & Liquid Glass "Fotoğraf Seç" Düğmesi (Water Droplet Optics)
+   ========================================================================== */
+.ios-btn-water-drop {
+  position: relative;
+  overflow: hidden;
+  height: 48px;
+  min-height: 48px;
+  padding: 12px 30px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  color: #FFFFFF;
+  border-radius: var(--ios-radius-pill);
+  /* Sıvı cam ve su damlası ışık kırılma gradyanı */
+  background: linear-gradient(175deg, rgba(64, 169, 255, 0.88) 0%, rgba(10, 132, 255, 0.92) 50%, rgba(0, 102, 225, 0.96) 100%);
+  /* Su damlası yüzey gerilimi dış halka parıltısı */
+  border: 1.2px solid rgba(255, 255, 255, 0.75);
+  /* Dış kostik gölge ve iç sıvı yansımaları */
+  box-shadow: 
+    0 10px 28px -4px rgba(0, 122, 255, 0.46),
+    0 3px 10px rgba(0, 0, 0, 0.08),
+    inset 0 2px 2px rgba(255, 255, 255, 0.95),
+    inset 0 -3px 8px rgba(0, 35, 110, 0.35),
+    inset 0 -1px 3px rgba(255, 255, 255, 0.55),
+    inset 0 0 16px rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(28px) saturate(210%);
+  -webkit-backdrop-filter: blur(28px) saturate(210%);
+  text-shadow: 0 1px 2px rgba(0, 30, 80, 0.40);
+  transition: transform 0.2s var(--ios-spring), box-shadow 0.2s ease, background 0.2s ease;
+  width: 100%;
+  max-width: 280px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  user-select: none;
+  cursor: pointer;
+}
+
+/* Su Damlası Üst Hilal Parlaması (Specular Meniscus Glint) */
+.ios-btn-water-drop::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 8%;
+  right: 8%;
+  height: 48%;
+  border-radius: 999px 999px 50% 50% / 999px 999px 30% 30%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.45) 50%, rgba(255, 255, 255, 0) 100%);
+  pointer-events: none;
+  filter: blur(0.4px);
+  opacity: 0.90;
+  transition: opacity 0.25s ease, transform 0.25s var(--ios-spring);
+}
+
+/* Su Damlası İçi Mini Işık Noktası */
+.ios-btn-water-drop::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 22px;
+  width: 24px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.85);
+  filter: blur(0.6px);
+  pointer-events: none;
+  opacity: 0.70;
+  transform: rotate(-3deg);
+  transition: opacity 0.2s ease;
+}
+
+/* Hover: Damlanın Işıkla Dolması ve Canlanması */
+.ios-btn-water-drop:hover:not(:disabled) {
+  transform: translateY(-2px) scale(1.02);
+  background: linear-gradient(175deg, rgba(80, 180, 255, 0.92) 0%, rgba(18, 142, 255, 0.95) 50%, rgba(0, 112, 240, 0.98) 100%);
+  border-color: rgba(255, 255, 255, 0.90);
+  box-shadow: 
+    0 14px 36px -4px rgba(0, 122, 255, 0.60),
+    0 4px 14px rgba(0, 0, 0, 0.12),
+    inset 0 2px 2.5px rgba(255, 255, 255, 1),
+    inset 0 -3px 9px rgba(0, 35, 110, 0.38),
+    inset 0 0 22px rgba(255, 255, 255, 0.40);
+}
+
+.ios-btn-water-drop:hover::before {
+  opacity: 1;
+  transform: scaleY(1.05);
+}
+
+/* Active: Elastik Su Damlası Baskı Tepkisi */
+.ios-btn-water-drop:active:not(:disabled) {
+  transform: scale(0.96) translateY(1px);
+  box-shadow: 
+    0 5px 16px rgba(0, 122, 255, 0.35),
+    inset 0 1.5px 2px rgba(255, 255, 255, 0.90),
+    inset 0 -2px 6px rgba(0, 35, 110, 0.30);
+}
+
+/* Karanlık Mod Su Damlası Uyumu */
+[data-theme="dark"] .ios-btn-water-drop {
+  background: linear-gradient(175deg, rgba(74, 175, 255, 0.75) 0%, rgba(10, 132, 255, 0.88) 50%, rgba(0, 85, 195, 0.95) 100%);
+  border: 1.2px solid rgba(255, 255, 255, 0.60);
+  box-shadow: 
+    0 12px 34px -4px rgba(10, 132, 255, 0.58),
+    0 4px 16px rgba(0, 0, 0, 0.45),
+    inset 0 2px 2px rgba(255, 255, 255, 0.90),
+    inset 0 -3px 8px rgba(0, 20, 80, 0.60),
+    inset 0 -1px 3px rgba(255, 255, 255, 0.40),
+    inset 0 0 20px rgba(10, 132, 255, 0.35);
+}
+
+.water-drop-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  filter: drop-shadow(0 1px 2px rgba(0, 30, 80, 0.35));
+  transition: transform 0.2s var(--ios-spring);
+}
+
+.ios-btn-water-drop:hover .water-drop-icon {
+  transform: scale(1.10) rotate(-2deg);
+}
+
+.water-drop-text {
+  position: relative;
+  z-index: 2;
+  font-weight: 700;
+}
+
+/* Button Spinner */
+.ios-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #FFFFFF;
+  border-radius: 50%;
+  animation: iosSpin 0.75s linear infinite;
+}
+
+@keyframes iosSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   2. iOS Sections & Grouped Cards
+   ========================================================================== */
+.ios-section {
+  margin-bottom: 24px;
+}
+
+.ios-section-header {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--ios-secondary-label);
+  margin-left: 16px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ios-section-footer {
+  font-size: 13px;
+  color: var(--ios-secondary-label);
+  margin-left: 16px;
+  margin-top: 8px;
+  line-height: 1.4;
+}
+
+.ios-card {
+  background-color: var(--ios-card-bg);
+  border-radius: var(--ios-radius-lg);
+  border: 0.5px solid var(--ios-separator);
+  box-shadow: var(--ios-shadow-sm);
+  overflow: hidden;
+  transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* ==========================================================================
+   3. iOS Grouped Rows (Settings Style)
+   ========================================================================== */
+.ios-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 16px;
+  min-height: 52px;
+  position: relative;
+  transition: background-color 0.15s ease;
+}
+
+.ios-row:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 16px;
+  right: 0;
+  height: 0.5px;
+  background-color: var(--ios-separator);
+}
+
+.ios-row-interactive:hover {
+  background-color: var(--ios-input-bg);
+}
+
+.ios-row-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.ios-row-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.ios-row-title-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.ios-row-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ios-label);
+}
+
+.ios-row-subtitle {
+  font-size: 12px;
+  color: var(--ios-secondary-label);
+  margin-top: 1px;
+}
+
+.ios-row-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: right;
+}
+
+.ios-row-value {
+  font-size: 15px;
+  color: var(--ios-secondary-label);
+}
+
+/* ==========================================================================
+   4. Cupertino Form Inputs
+   ========================================================================== */
+.ios-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.ios-input {
+  font-family: var(--ios-font);
+  font-size: 15px;
+  color: var(--ios-label);
+  background-color: var(--ios-input-bg);
+  border: 1px solid var(--ios-input-border);
+  border-radius: var(--ios-radius-md);
+  padding: 10px 14px;
+  outline: none;
+  transition: all 0.2s var(--ios-spring);
+  width: 100%;
+  max-width: 240px;
+  text-align: right;
+}
+
+.ios-input:focus {
+  background-color: var(--ios-input-bg-focus);
+  border-color: var(--ios-input-border-focus);
+  box-shadow: 0 0 0 3px var(--ios-blue-tint);
+}
+
+.ios-input::placeholder {
+  color: var(--ios-tertiary-label);
+}
+
+.ios-input-left-align {
+  text-align: left;
+  max-width: 100%;
+}
+
+.ios-input-unit {
+  position: absolute;
+  right: 12px;
+  font-size: 14px;
+  color: var(--ios-secondary-label);
+  pointer-events: none;
+}
+
+.ios-input.has-unit {
+  padding-right: 38px;
+}
+
+/* Inline Validation Error */
+.ios-input-error-msg {
+  font-size: 12px;
+  color: var(--ios-red);
+  margin-top: 4px;
+  display: none;
+  animation: fadeIn 0.2s ease;
+}
+
+.ios-input.is-invalid {
+  border-color: var(--ios-red) !important;
+  box-shadow: 0 0 0 3px var(--ios-red-tint) !important;
+}
+
+.ios-input.is-invalid + .ios-input-error-msg {
+  display: block;
+}
+
+/* ==========================================================================
+   5. Preset Chips & Pill Quick Selectors
+   ========================================================================== */
+.ios-presets-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px 16px 14px 16px;
+  background-color: var(--ios-card-bg);
+}
+
+.ios-preset-chip {
+  background-color: var(--ios-input-bg);
+  color: var(--ios-label);
+  border: 1px solid var(--ios-input-border);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: var(--ios-radius-pill);
+  cursor: pointer;
+  transition: all 0.15s var(--ios-spring);
+  user-select: none;
+}
+
+.ios-preset-chip:hover {
+  background-color: var(--ios-blue-tint);
+  border-color: var(--ios-blue);
+  color: var(--ios-blue);
+}
+
+.ios-preset-chip:active {
+  transform: scale(0.95);
+}
+
+.ios-preset-chip.active {
+  background-color: var(--ios-blue);
+  color: #FFFFFF;
+  border-color: var(--ios-blue);
+}
+
+/* ==========================================================================
+   6. Dynamic Island / iOS Zarif Bildirim Kapsülü (Liquid Glass & İnce)
+   ========================================================================== */
+.ios-toast-container {
+  position: fixed;
+  top: calc(var(--navbar-pad-top, max(14px, calc(env(safe-area-inset-top, 0px) + 12px))) + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(-140%) scale(0.94);
+  z-index: 10000;
+  transition: transform 0.35s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.25s ease;
+  opacity: 0;
+  pointer-events: none;
+  max-width: calc(100vw - 32px);
+}
+
+.ios-toast-container.show {
+  transform: translateX(-50%) translateY(0) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Sıvı Cam Gri (Liquid Glass Gray) ve Zarif Bildirim Kapsülü */
+.ios-toast {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  /* Zarif gri sıvı cam gradyanı */
+  background: linear-gradient(180deg, rgba(236, 238, 244, 0.90) 0%, rgba(218, 222, 230, 0.86) 100%);
+  color: #1C1C1E;
+  padding: 6px 16px 6px 8px;
+  min-height: 36px;
+  border-radius: var(--ios-radius-pill);
+  backdrop-filter: blur(28px) saturate(190%) contrast(102%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%) contrast(102%);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.10), 
+    0 2px 6px rgba(0, 0, 0, 0.04), 
+    inset 0 1px 1.5px rgba(255, 255, 255, 0.95),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.04);
+  font-family: var(--ios-font);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.15px;
+  white-space: nowrap;
+  max-width: 100%;
+  transition: all 0.25s ease;
+}
+
+/* Karanlık Modda Zarif Koyu Gri Sıvı Cam */
+[data-theme="dark"] .ios-toast {
+  background: linear-gradient(180deg, rgba(46, 46, 52, 0.88) 0%, rgba(30, 30, 35, 0.90) 100%);
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 
+    0 12px 36px rgba(0, 0, 0, 0.50), 
+    0 2px 8px rgba(0, 0, 0, 0.30), 
+    inset 0 1px 1.2px rgba(255, 255, 255, 0.30);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+}
+
+/* Bildirim İkonu: Zarif Mavi "i" İkonu (Apple Blue) */
+.ios-toast-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  flex-shrink: 0;
+  background: rgba(0, 122, 255, 0.14);
+  color: var(--ios-blue) !important;
+  border: 1px solid rgba(0, 122, 255, 0.32);
+  box-shadow: 0 1px 4px rgba(0, 122, 255, 0.20);
+  line-height: 1;
+}
+
+[data-theme="dark"] .ios-toast-icon {
+  background: rgba(10, 132, 255, 0.22);
+  color: #409CFF !important;
+  border-color: rgba(64, 156, 255, 0.45);
+  box-shadow: 0 1px 6px rgba(10, 132, 255, 0.35);
+}
+
+.toast-info-i {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+  font-weight: 800;
+  font-size: 12px;
+  color: var(--ios-blue) !important;
+  line-height: 1;
+  display: inline-block;
+  transform: translateY(-0.5px);
+}
+
+[data-theme="dark"] .toast-info-i {
+  color: #409CFF !important;
+}
+
+.ios-toast-info .ios-toast-icon {
+  background: rgba(0, 122, 255, 0.14) !important;
+  color: var(--ios-blue) !important;
+  border: 1px solid rgba(0, 122, 255, 0.35) !important;
+}
+
+[data-theme="dark"] .ios-toast-info .ios-toast-icon {
+  background: rgba(10, 132, 255, 0.22) !important;
+  color: #409CFF !important;
+  border: 1px solid rgba(64, 156, 255, 0.45) !important;
+}
+
+.ios-toast-success .ios-toast-icon {
+  background: rgba(52, 199, 89, 0.16) !important;
+  color: var(--ios-green) !important;
+  border: 1px solid rgba(52, 199, 89, 0.35) !important;
+}
+
+[data-theme="dark"] .ios-toast-success .ios-toast-icon {
+  background: rgba(48, 209, 88, 0.22) !important;
+  color: #30D158 !important;
+  border: 1px solid rgba(48, 209, 88, 0.45) !important;
+}
+
+.ios-toast-error .ios-toast-icon {
+  background: rgba(255, 59, 48, 0.16) !important;
+  color: var(--ios-red) !important;
+  border: 1px solid rgba(255, 59, 48, 0.35) !important;
+}
+
+[data-theme="dark"] .ios-toast-error .ios-toast-icon {
+  background: rgba(255, 69, 58, 0.22) !important;
+  color: #FF453A !important;
+  border: 1px solid rgba(255, 69, 58, 0.45) !important;
+}
+
+.ios-toast-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.25;
+}
+
+/* ==========================================================================
+   7. iOS Badges & Indicators
+   ========================================================================== */
+.ios-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: var(--ios-radius-pill);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  text-transform: uppercase;
+}
+
+.ios-badge-blue {
+  background-color: var(--ios-blue-tint);
+  color: var(--ios-blue);
+}
+
+.ios-badge-green {
+  background-color: var(--ios-green-tint);
+  color: var(--ios-green);
+}
+
+.ios-badge-orange {
+  background-color: var(--ios-orange-tint);
+  color: var(--ios-orange);
+}
+
+.ios-badge-gray {
+  background-color: var(--ios-input-bg);
+  color: var(--ios-secondary-label);
+}
+
+.ios-badge-gold {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.22) 0%, rgba(212, 160, 23, 0.16) 100%);
+  color: #9E6B00;
+  border: 0.5px solid rgba(212, 160, 23, 0.50);
+  font-weight: 700;
+  box-shadow: 0 1px 4px rgba(212, 160, 23, 0.18);
+  letter-spacing: 0.4px;
+}
+
+[data-theme="dark"] .ios-badge-gold {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.24) 0%, rgba(212, 175, 55, 0.14) 100%);
+  color: #FFD700;
+  border-color: rgba(255, 215, 0, 0.45);
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.22);
+}
+
+/* ==========================================================================
+   8. Segmented Control & Tek Tuş Su Damlası Liquid Glass Tema Değiştirici
+   ========================================================================== */
+.ios-theme-toggle-btn {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 12px;
+  min-width: 96px;
+  border-radius: var(--ios-radius-pill);
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  color: #FFFFFF;
+  /* Sıvı cam ve su damlası ışık kırılma gradyanı */
+  background: linear-gradient(175deg, rgba(64, 169, 255, 0.90) 0%, rgba(10, 132, 255, 0.93) 50%, rgba(0, 102, 225, 0.96) 100%);
+  /* Su damlası yüzey gerilimi dış halka parıltısı */
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  /* Dış kostik parlama ve iç sıvı yansımaları */
+  box-shadow: 
+    0 4px 14px -2px rgba(0, 122, 255, 0.42),
+    0 1px 4px rgba(0, 0, 0, 0.08),
+    inset 0 1.5px 2px rgba(255, 255, 255, 0.95),
+    inset 0 -2px 5px rgba(0, 35, 110, 0.35),
+    inset 0 -1px 2px rgba(255, 255, 255, 0.50),
+    inset 0 0 10px rgba(255, 255, 255, 0.20);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  text-shadow: 0 1px 2px rgba(0, 30, 80, 0.40);
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  box-sizing: border-box;
+  transition: transform 0.2s var(--ios-spring), box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+/* Su Damlası Üst Hilal Parlaması (Specular Meniscus Glint) */
+.ios-theme-toggle-btn::before {
+  content: '';
+  position: absolute;
+  top: 1.5px;
+  left: 6%;
+  right: 6%;
+  height: 46%;
+  border-radius: 999px 999px 50% 50% / 999px 999px 30% 30%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.40) 50%, rgba(255, 255, 255, 0) 100%);
+  pointer-events: none;
+  filter: blur(0.3px);
+  opacity: 0.92;
+  transition: opacity 0.25s ease, transform 0.25s var(--ios-spring);
+  z-index: 1;
+}
+
+/* Su Damlası İçi Mini Işık Noktası */
+.ios-theme-toggle-btn::after {
+  content: '';
+  position: absolute;
+  top: 3.5px;
+  left: 10px;
+  width: 14px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.88);
+  filter: blur(0.5px);
+  pointer-events: none;
+  opacity: 0.75;
+  transform: rotate(-3deg);
+  transition: opacity 0.2s ease;
+  z-index: 1;
+}
+
+/* Hover: Damlanın Işıkla Dolması ve Canlanması */
+.ios-theme-toggle-btn:hover {
+  transform: translateY(-1px) scale(1.03);
+  background: linear-gradient(175deg, rgba(80, 180, 255, 0.94) 0%, rgba(18, 142, 255, 0.96) 50%, rgba(0, 112, 240, 0.98) 100%);
+  border-color: rgba(255, 255, 255, 0.90);
+  box-shadow: 
+    0 6px 20px -2px rgba(0, 122, 255, 0.55),
+    0 2px 6px rgba(0, 0, 0, 0.12),
+    inset 0 1.5px 2px rgba(255, 255, 255, 1),
+    inset 0 -2px 6px rgba(0, 35, 110, 0.40),
+    inset 0 0 14px rgba(255, 255, 255, 0.35);
+}
+
+.ios-theme-toggle-btn:hover::before {
+  opacity: 1;
+  transform: scaleY(1.05);
+}
+
+/* Active: Elastik Su Damlası Baskı Tepkisi */
+.ios-theme-toggle-btn:active {
+  transform: scale(0.94) translateY(1px);
+  box-shadow: 
+    0 3px 10px rgba(0, 122, 255, 0.32),
+    inset 0 1px 1.5px rgba(255, 255, 255, 0.90),
+    inset 0 -1.5px 4px rgba(0, 35, 110, 0.30);
+}
+
+.ios-theme-toggle-btn .theme-toggle-icon,
+.ios-theme-toggle-btn .theme-toggle-text {
+  position: relative;
+  z-index: 2;
+}
+
+.ios-theme-toggle-btn .theme-toggle-icon {
+  font-size: 13px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 1px 2px rgba(0, 25, 70, 0.35));
+  transition: transform 0.3s var(--ios-spring);
+}
+
+.ios-theme-toggle-btn:hover .theme-toggle-icon {
+  transform: rotate(15deg) scale(1.18);
+}
+
+.ios-theme-toggle-btn .theme-toggle-text {
+  font-weight: 700;
+  letter-spacing: -0.2px;
+}
+
+/* Karanlık Mod Su Damlası Uyumu */
+[data-theme="dark"] .ios-theme-toggle-btn {
+  background: linear-gradient(175deg, rgba(74, 175, 255, 0.78) 0%, rgba(10, 132, 255, 0.88) 50%, rgba(0, 85, 195, 0.96) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow: 
+    0 6px 20px -2px rgba(0, 122, 255, 0.52),
+    0 2px 6px rgba(0, 0, 0, 0.35),
+    inset 0 1.5px 2px rgba(255, 255, 255, 0.95),
+    inset 0 -2px 6px rgba(0, 20, 70, 0.50),
+    inset 0 0 12px rgba(64, 169, 255, 0.30);
+  color: #FFFFFF;
+}
+
+[data-theme="dark"] .ios-theme-toggle-btn:hover {
+  background: linear-gradient(175deg, rgba(88, 186, 255, 0.85) 0%, rgba(20, 142, 255, 0.94) 50%, rgba(0, 95, 215, 0.98) 100%);
+  border-color: rgba(255, 255, 255, 0.85);
+  box-shadow: 
+    0 8px 24px -2px rgba(0, 122, 255, 0.65),
+    0 3px 8px rgba(0, 0, 0, 0.45),
+    inset 0 2px 2px rgba(255, 255, 255, 1),
+    inset 0 -2px 7px rgba(0, 25, 80, 0.55),
+    inset 0 0 16px rgba(64, 169, 255, 0.40);
+}
+
+.ios-segmented-control {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--ios-input-bg);
+  padding: 2px;
+  border-radius: var(--ios-radius-pill);
+  border: 0.5px solid var(--ios-separator);
+  position: relative;
+  gap: 2px;
+  height: 28px;
+  box-sizing: border-box;
+}
+
+.ios-segment-btn {
+  background: transparent;
+  border: none;
+  font-family: var(--ios-font);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ios-secondary-label);
+  padding: 3px 10px;
+  height: 22px;
+  border-radius: var(--ios-radius-pill);
+  cursor: pointer;
+  transition: color 0.15s ease, background-color 0.2s var(--ios-spring), box-shadow 0.2s ease;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.ios-segment-btn:hover:not(.active) {
+  color: var(--ios-label);
+}
+
+.ios-segment-btn.active {
+  background-color: var(--ios-card-bg);
+  color: var(--ios-label);
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="dark"] .ios-segment-btn.active {
+  background-color: #3A3A3C;
+  color: #FFFFFF;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
+}
+
+/* ==========================================================================
+   9. Modal & Bottom Sheet (Inspector)
+   ========================================================================== */
+.ios-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 9990;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.ios-modal-overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.ios-modal {
+  background-color: var(--ios-card-bg);
+  border-radius: var(--ios-radius-xl);
+  border: 0.5px solid var(--ios-separator);
+  box-shadow: var(--ios-shadow-lg);
+  width: 100%;
+  max-width: 680px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(20px) scale(0.96);
+  transition: transform 0.3s var(--ios-spring-bounce);
+  overflow: hidden;
+}
+
+.ios-modal-overlay.show .ios-modal {
+  transform: translateY(0) scale(1);
+}
+
+.ios-modal-header {
+  padding: 16px 20px;
+  border-bottom: 0.5px solid var(--ios-separator);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ios-modal-title {
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.ios-modal-body {
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.ios-modal-close {
+  background: var(--ios-input-bg);
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--ios-secondary-label);
+  font-size: 16px;
+  transition: background-color 0.15s ease;
+}
+
+.ios-modal-close:hover {
+  background: var(--ios-input-bg-focus);
+  color: var(--ios-label);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   Uygulama İçi Galeriye Kaydetme Modalı (In-App Gallery Save Sheet)
+   ========================================================================== */
+.save-modal {
+  max-width: 440px;
+  width: 100%;
+}
+
+.save-modal-header-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.save-modal-badge {
+  font-family: var(--ios-font);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ios-green);
+  background: var(--ios-green-tint);
+  padding: 2px 8px;
+  border-radius: var(--ios-radius-pill);
+}
+
+.save-modal-body {
+  padding: 16px 20px 22px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.save-modal-preview-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.save-modal-image {
+  max-width: 100%;
+  max-height: 250px;
+  border-radius: var(--ios-radius-md);
+  object-fit: contain;
+  box-shadow: var(--ios-shadow-md);
+  border: 0.5px solid var(--ios-separator);
+  background-color: var(--ios-input-bg);
+  user-select: auto;
+  -webkit-touch-callout: default; /* iOS Safari & PWA'da uzun basarak doğrudan galeriye kaydetmeyi sağlar */
+}
+
+.save-modal-hold-hint {
+  width: 100%;
+  font-family: var(--ios-font);
+  font-size: 12px;
+  color: var(--ios-secondary-label);
+  background-color: var(--ios-input-bg);
+  padding: 9px 13px;
+  border-radius: var(--ios-radius-sm);
+  line-height: 1.4;
+  border: 0.5px solid var(--ios-separator);
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.save-modal-actions {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.save-modal-actions .ios-btn {
+  width: 100%;
+  max-width: 100%;
+}
+

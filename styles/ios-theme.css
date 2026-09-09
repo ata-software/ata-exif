@@ -1,0 +1,206 @@
+/**
+ * ios-theme.css
+ * 
+ * Authentic Apple iOS 17/18 Design Tokens, SF Pro Typography,
+ * Cupertino Color Palettes.
+ * Sadece Aydınlık (Light) ve Karanlık (Dark) modları destekler (Oto modu kaldırılmıştır).
+ */
+
+@import url('https://fonts.cdnfonts.com/css/sf-pro-display');
+
+:root {
+  /* Safe Area ve Dinamik Durum Çubuğu Metrikleri (Her iki temada kesinlikle sabit ve eşit) */
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
+
+  --navbar-inner-height: 48px;
+  /* Varsayılan masaüstü/tarayıcı: güvenli alan + rahat nefes payı */
+  --navbar-pad-top: max(14px, calc(env(safe-area-inset-top, 0px) + 8px));
+  --navbar-pad-bottom: 8px;
+  --navbar-total-height: calc(var(--navbar-inner-height) + var(--navbar-pad-top) + var(--navbar-pad-bottom));
+
+  /* Köşe Yuvarlaklıkları */
+  --ios-radius-xs: 8px;
+  --ios-radius-sm: 10px;
+  --ios-radius-md: 14px;
+  --ios-radius-lg: 18px;
+  --ios-radius-xl: 22px;
+  --ios-radius-pill: 9999px;
+
+  /* iPhone SF Pro Tipografi */
+  --ios-font: 'SF Pro Display', -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --ios-font-mono: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
+
+  /* Geçişler */
+  --ios-spring: cubic-bezier(0.32, 0.72, 0, 1);
+  --ios-spring-bounce: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Mobil Ekranlar: Durum çubuğu ve ön kamera / çentik için rahat pay (Her iki temada da %100 eşit) */
+@media (max-width: 600px) {
+  :root,
+  :root[data-theme="light"],
+  :root[data-theme="dark"] {
+    --navbar-pad-top: max(18px, calc(env(safe-area-inset-top, 0px) + 12px));
+    --navbar-pad-bottom: 9px;
+  }
+}
+
+/* Mobil Ana Ekrana Ekleme (PWA / Standalone Web App) Durumu (Her iki temada da %100 eşit) */
+@media all and (display-mode: standalone), (display-mode: fullscreen) {
+  :root,
+  :root[data-theme="light"],
+  :root[data-theme="dark"] {
+    --navbar-pad-top: max(32px, calc(env(safe-area-inset-top, 0px) + 16px));
+    --navbar-pad-bottom: 10px;
+  }
+}
+
+html.is-standalone,
+body.is-standalone,
+html.is-standalone[data-theme="light"],
+html.is-standalone[data-theme="dark"],
+body.is-standalone[data-theme="light"],
+body.is-standalone[data-theme="dark"] {
+  --navbar-pad-top: max(32px, calc(env(safe-area-inset-top, 0px) + 16px));
+  --navbar-pad-bottom: 10px;
+}
+
+/* ==========================================================================
+   Tema Renk Paletleri (Sadece renkler, boyut metrikleri asla içermez)
+   ========================================================================== */
+
+/* Aydınlık Mod (Varsayılan) */
+:root,
+:root[data-theme="light"] {
+  --ios-system-bg: #F2F2F7;
+  --ios-secondary-bg: #FFFFFF;
+  --ios-tertiary-bg: #E5E5EA;
+  --ios-elevated-bg: #FFFFFF;
+  --ios-grouped-bg: #F2F2F7;
+  --ios-card-bg: #FFFFFF;
+
+  --ios-label: #000000;
+  --ios-secondary-label: #8E8E93;
+  --ios-tertiary-label: #AEAEB2;
+  --ios-quaternary-label: #D1D1D6;
+
+  --ios-blue: #007AFF;
+  --ios-blue-hover: #0062CC;
+  --ios-blue-tint: rgba(0, 122, 255, 0.12);
+  --ios-blue-tint-active: rgba(0, 122, 255, 0.22);
+
+  --ios-green: #34C759;
+  --ios-green-tint: rgba(52, 199, 89, 0.12);
+
+  --ios-red: #FF3B30;
+  --ios-red-tint: rgba(255, 59, 48, 0.12);
+
+  --ios-orange: #FF9500;
+  --ios-orange-tint: rgba(255, 149, 0, 0.12);
+
+  --ios-separator: rgba(60, 60, 67, 0.15);
+  --ios-opaque-separator: #C6C6C8;
+
+  --ios-input-bg: rgba(118, 118, 128, 0.08);
+  --ios-input-bg-focus: rgba(118, 118, 128, 0.14);
+  --ios-input-border: rgba(60, 60, 67, 0.15);
+  --ios-input-border-focus: #007AFF;
+
+  --ios-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04), 0 0.5px 1.5px rgba(0, 0, 0, 0.03);
+  --ios-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+  --ios-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.10), 0 2px 6px rgba(0, 0, 0, 0.05);
+
+  --ios-blur: blur(25px) saturate(180%);
+}
+
+/* Karanlık Mod */
+:root[data-theme="dark"] {
+  --ios-system-bg: #000000;
+  --ios-secondary-bg: #1C1C1E;
+  --ios-tertiary-bg: #2C2C2E;
+  --ios-elevated-bg: #2C2C2E;
+  --ios-grouped-bg: #000000;
+  --ios-card-bg: #1C1C1E;
+
+  --ios-label: #FFFFFF;
+  --ios-secondary-label: #8E8E93;
+  --ios-tertiary-label: #636366;
+  --ios-quaternary-label: #3A3A3C;
+
+  --ios-blue: #0A84FF;
+  --ios-blue-hover: #409CFF;
+  --ios-blue-tint: rgba(10, 132, 255, 0.18);
+  --ios-blue-tint-active: rgba(10, 132, 255, 0.30);
+
+  --ios-green: #30D158;
+  --ios-green-tint: rgba(48, 209, 88, 0.18);
+
+  --ios-red: #FF453A;
+  --ios-red-tint: rgba(255, 69, 58, 0.18);
+
+  --ios-orange: #FF9F0A;
+  --ios-orange-tint: rgba(255, 159, 10, 0.18);
+
+  --ios-separator: rgba(84, 84, 88, 0.40);
+  --ios-opaque-separator: #38383A;
+
+  --ios-input-bg: rgba(255, 255, 255, 0.08);
+  --ios-input-bg-focus: rgba(255, 255, 255, 0.14);
+  --ios-input-border: rgba(255, 255, 255, 0.14);
+  --ios-input-border-focus: #0A84FF;
+
+  --ios-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.40);
+  --ios-shadow-md: 0 6px 20px rgba(0, 0, 0, 0.50);
+  --ios-shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.70);
+
+  --ios-blur: blur(25px) saturate(180%);
+}
+
+/* Temel Gövde Stilleri */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  background-color: var(--ios-system-bg);
+  color: var(--ios-label);
+  font-family: var(--ios-font);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.45;
+  transition: background-color 0.25s ease, color 0.25s ease;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Boş durumda (Fotoğraf Seç ekranı): Kesinlikle kaydırmasız, ekrana %100 tam sığan düzen */
+body:not(.has-editor) {
+  height: 100vh;
+  height: 100dvh;
+  max-height: 100vh;
+  max-height: 100dvh;
+  overflow: hidden;
+}
+
+/* Düzenleyici ekranı aktifken: Doğal akıcı kaydırma */
+body.has-editor {
+  min-height: 100vh;
+  min-height: 100dvh;
+  height: auto;
+  overflow-y: auto;
+}
+
