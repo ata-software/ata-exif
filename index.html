@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>ATA EXIF α</title>
+    <meta name="description"
+        content="Orijinal görüntü kalitesini ve piksellerini %100 kayıpsız koruyarak fotoğraf EXIF ve kamera meta verilerini görüntüleme, düzenleme ve doğrulama web uygulaması.">
+
+    <!-- PWA & Favicon Meta -->
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Apple Web App & Status Bar Meta -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="ATA EXIF α">
+    <meta name="application-name" content="ATA EXIF α">
+    <meta name="theme-color" content="#F2F2F7">
+
+    <!-- Anında Tema ve Standalone Başlatıcı (İlk açılışta anında uygular, düzen kaymasını önler) -->
+    <script>
+        (function () {
+            try {
+                var saved = localStorage.getItem('exif-editor-theme');
+                var theme = (saved === 'dark') ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-theme', theme);
+                var isStandalone = window.navigator.standalone === true ||
+                    window.matchMedia('(display-mode: standalone)').matches ||
+                    window.matchMedia('(display-mode: fullscreen)').matches;
+                if (isStandalone) {
+                    document.documentElement.classList.add('is-standalone');
+                }
+            } catch (e) { }
+        })();
+    </script>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="styles/ios-theme.css?v=4.8">
+    <link rel="stylesheet" href="styles/components.css?v=4.8">
+    <link rel="stylesheet" href="styles/app.css?v=4.8">
+</head>
+
+<body>
+
+    <!-- Dynamic Island Yüzen Bildirim Hapı (İnce & Zarif) -->
+    <div id="ios-toast-container" class="ios-toast-container">
+        <div id="ios-toast" class="ios-toast ios-toast-info">
+            <span id="ios-toast-icon" class="ios-toast-icon"><span class="toast-info-i">i</span></span>
+            <span id="ios-toast-text" class="ios-toast-text">Meta Veriler Uygulandı ve Doğrulandı</span>
+        </div>
+    </div>
+
+    <!-- iOS Sabit Üst Menü Çubuğu (Kompakt, Modern, Asla Taşmayan) -->
+    <header class="ios-navbar">
+        <div class="ios-navbar-inner">
+            <div class="ios-nav-brand" id="nav-brand">
+                <div class="ios-nav-app-icon" aria-hidden="true">
+                    <img src="assets/apple-touch-icon.png" alt="ATA EXIF Logo" class="ios-nav-app-icon-img">
+                </div>
+                <div class="ios-nav-titles">
+                    <h1 class="ios-nav-title">ATA EXIF α</h1>
+                    <span class="ios-nav-version">EXIF v1.0</span>
+                </div>
+            </div>
+
+            <div class="ios-nav-actions">
+                <div class="privacy-badge"
+                    title="Tüm işlemler %100 cihazınızın tarayıcısında gerçekleşir, sunucuya dosya gönderilmez.">
+                    <span class="privacy-badge-icon">🔒</span>
+                    <span class="privacy-badge-text">Cihaz İçi İşlem</span>
+                </div>
+
+                <!-- Tek Tuş Tema Değiştirici -->
+                <button type="button" class="ios-theme-toggle-btn" id="theme-toggle-btn" aria-label="Alaca Moduna Geç"
+                    title="Alaca Moduna Geç">
+                    <span class="theme-toggle-icon" id="theme-toggle-icon">🌙</span>
+                    <span class="theme-toggle-text" id="theme-toggle-text">Alaca</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- iOS Sabit Geri Dön Barı (Üst Menünün Hemen Altında, Sayfa Aşağı Kaydırılsa Bile Konumu Sabit Kalan Tuş) -->
+    <div id="ios-back-bar" class="ios-back-bar" style="display: none;">
+        <div class="ios-back-bar-inner">
+            <button type="button" class="ios-nav-back-btn" id="nav-back-btn" aria-label="Fotoğraf Seç Ekranına Geri Dön"
+                title="Fotoğraf Seç Ekranına Geri Dön">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+                <span>Fotoğraf Seç</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Ana Uygulama Gövdesi -->
+    <main class="app-container">
+
+        <!-- Gizli Dosya Seçici Girişi -->
+        <input type="file" id="file-input"
+            accept="image/jpeg,image/jpg,image/png,image/webp,image/heic,image/heif,.heic,.heif">
+
+        <!-- ========================================================================
+         GÖRÜNÜM 1: Boş Durum & iPhone Stili Yükleme Alanı
+         ======================================================================== -->
+        <div id="empty-state-view" class="empty-state-view">
+            <div id="upload-card-zone" class="upload-card-zone">
+                <div class="upload-icon-bubble">
+                    <img src="assets/apple-touch-icon.png" alt="ATA EXIF α" class="upload-brand-logo">
+                </div>
+                <h2 class="upload-card-title">Bir Fotoğraf Seçin</h2>
+                <p class="upload-card-desc">
+                    Düzenlemek için bir fotoğraf seçin.<br>
+                    Orijinal piksel verileri ve görüntü kalitesi %100 kayıpsız korunur.
+                </p>
+                <button id="browse-btn" class="ios-btn ios-btn-liquid-glass ios-btn-water-drop"
+                    style="max-width: 280px; margin: 0 auto;">
+                    <span class="water-drop-icon" aria-hidden="true">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="4" ry="4"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                    </span>
+                    <span class="water-drop-text">Fotoğraf Seç</span>
+                </button>
+                <div class="upload-formats-row">
+                    <span class="ios-badge ios-badge-gold">HEIC</span>
+                    <span class="ios-badge ios-badge-gray">JPEG</span>
+                    <span class="ios-badge ios-badge-gray">PNG</span>
+                    <span class="ios-badge ios-badge-gray">WebP</span>
+                </div>
+            </div>
+
+            <!-- Tek Tıkla Hazır Örnek Fotoğraflar -->
+            <div class="sample-photos-row">
+                <span class="sample-photos-label">Veya hazır bir örnek fotoğrafla hemen deneyin</span>
+                <div class="sample-photos-buttons">
+                    <button id="sample-iphone-btn" class="ios-btn ios-btn-subtle ios-btn-sm" type="button">
+                        <span>📱 iPhone 17 Pro</span>
+                    </button>
+                    <button id="sample-sony-btn" class="ios-btn ios-btn-subtle ios-btn-sm" type="button">
+                        <span>📷 Sony α1 II</span>
+                    </button>
+                </div>
+                <div class="quality-guarantee-note" style="margin-top: 14px;">
+                    <span>🛡️ Fotoğrafınız cihazınızda kalır, Sunucu Yüklemesi Yoktur.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================================================
+         GÖRÜNÜM 2: Aktif Çift Sütunlu Düzenleyici Görünümü
+         ======================================================================== -->
+        <div id="editor-view" class="editor-layout" style="display: none;">
+
+            <!-- Sol Sütun: Fotoğraf Önizleme ve Tanı Bilgileri -->
+            <div class="preview-pane">
+
+                <!-- Önizleme Kartı -->
+                <div class="hero-preview-card">
+                    <div class="preview-image-container">
+                        <img id="preview-image" class="preview-image" alt="Yüklenen fotoğraf önizlemesi" src="">
+                        <div id="preview-badge" class="preview-overlay-badge">4032 × 3024</div>
+                    </div>
+                    <div class="preview-card-actions">
+                        <button id="editor-back-btn" class="ios-btn ios-btn-subtle ios-btn-sm" type="button"
+                            title="Fotoğraf Seç Ekranına Geri Dön">
+                            <span>‹ Geri Dön</span>
+                        </button>
+                        <button id="replace-photo-btn" class="ios-btn ios-btn-subtle ios-btn-sm" type="button">
+                            <span>↻ Fotoğrafı Değiştir</span>
+                        </button>
+                        <button id="inspect-exif-btn" class="ios-btn ios-btn-secondary ios-btn-sm" type="button">
+                            <span>ℹ Detaylı EXIF</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Gruplanmış Liste: Fotoğraf Bilgileri -->
+                <div class="ios-section">
+                    <div class="ios-section-header">Fotoğraf Bilgileri</div>
+                    <div class="ios-card">
+                        <div class="ios-row">
+                            <span class="ios-row-title">Çözünürlük</span>
+                            <span id="info-resolution" class="ios-row-value">4032 × 3024</span>
+                        </div>
+                        <div class="ios-row">
+                            <div class="ios-row-title-wrap">
+                                <span class="ios-row-title">Hesaplanan Megapiksel</span>
+                                <span class="ios-row-subtitle">genişlik × yükseklik / 1.000.000</span>
+                            </div>
+                            <span id="info-megapixels" class="ios-row-value">12.19 MP</span>
+                        </div>
+                        <div class="ios-row">
+                            <span class="ios-row-title">Orijinal Dosya Boyutu</span>
+                            <span id="info-original-size" class="ios-row-value">4.82 MB</span>
+                        </div>
+                        <div class="ios-row">
+                            <span class="ios-row-title">İşlenmiş Dosya Boyutu</span>
+                            <span id="info-processed-size" class="ios-row-value">--</span>
+                        </div>
+                        <div class="ios-row">
+                            <span class="ios-row-title">Format</span>
+                            <span id="info-format" class="ios-row-value">image/jpeg</span>
+                        </div>
+                    </div>
+                    <div class="ios-section-footer">
+                        Orijinal çözünürlük, en-boy oranı, renk profili ve piksel akışı tamamen korunur.
+                    </div>
+                </div>
+
+                <!-- Doğrulama Kontrol Listesi Kartı -->
+                <div id="verification-section" class="ios-section">
+                    <div class="ios-section-header">
+                        <span>EXIF Doğrulama</span>
+                        <span id="verification-status-pill" class="ios-badge ios-badge-blue">Hazır</span>
+                    </div>
+                    <div class="ios-card verification-card">
+                        <div id="verification-list" class="verification-list">
+                            <!-- JavaScript ile dinamik olarak doldurulur -->
+                        </div>
+                    </div>
+                    <div class="ios-section-footer">
+                        Oluşturulan dosya doğrudan ikili olarak okunup etiketlerin gerçekten yazıldığı test edilir.
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Sağ Sütun: iOS Ayarlar Stili Meta Veri Düzenleyicisi -->
+            <div class="settings-pane">
+
+                <!-- Grup 1: Kamera -->
+                <div class="ios-section">
+                    <div class="ios-section-header">Kamera</div>
+                    <div class="ios-card">
+                        <!-- Kamera Markası -->
+                        <div class="ios-row">
+                            <span class="ios-row-title">Kamera Markası</span>
+                            <div class="ios-input-wrap">
+                                <input type="text" id="input-camera-make" class="ios-input" placeholder="örn. Apple"
+                                    spellcheck="false">
+                            </div>
+                        </div>
+                        <!-- Marka Hazır Seçimleri -->
+                        <div class="ios-presets-container">
+                            <button type="button" class="ios-preset-chip" data-target="input-camera-make"
+                                data-val="Apple">Apple</button>
+                            <button type="button" class="ios-preset-chip" data-target="input-camera-make"
+                                data-val="Sony">Sony</button>
+                            <button type="button" class="ios-preset-chip" data-target="input-camera-make"
+                                data-val="Canon">Canon</button>
+                            <button type="button" class="ios-preset-chip" data-target="input-camera-make"
+                                data-val="Nikon">Nikon</button>
+                            <button type="button" class="ios-preset-chip" data-target="input-camera-make"
+                                data-val="Fujifilm">Fujifilm</button>
+                            <button type="button" class="ios-preset-chip" data-target="input-camera-make"
+                                data-val="Leica">Leica</button>
+                            <button type="button" class="ios-preset-chip" data-target="input-camera-make"
+                                data-val="Google">Google</button>
+                        </div>
+
+                        <!-- Kamera Modeli -->
+                        <div class="ios-row">
+                            <span class="ios-row-title">Kamera Modeli</span>
+                            <div class="ios-input-wrap">
+                                <input type="text" id="input-camera-model" class="ios-input"
+                                    placeholder="örn. iPhone 17 Pro" spellcheck="false">
+                            </div>
+                        </div>
+                        <!-- Model Hazır Seçimleri -->
+                        <div class="ios-presets-container">
+                            <button type="button" class="ios-preset-chip" data-target="input-camera-model"
+                                data-val="iPhone 17 Pro">iPhone 17 Pro</button>
+                            <button type="button" class="ios-preset-chip" data-target="input-camera-model"
+                                data-val="Sony α1 II">Sony α1 II</button>
+                            <button type="button" class="ios-preset-chip" data-target="input-camera-model"
+                                data-val="iPhone 16 Pro Max">iPhone 16 Pro Max</button>
+                            <button type="button" class="ios-preset-chip" data-target="input-camera-model"
+                                data-val="iPhone 15 Pro">iPhone 15 Pro</button>
+                            <button type="button" class="ios-preset-chip" data-target="input-camera-model"
+                                data-val="ILCE-7M4">Sony α7 IV</button>
+                            <button type="button" class="ios-preset-chip" data-target="input-camera-model"
+                                data-val="Canon EOS R5">Canon EOS R5</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grup 2: Lens -->
+                <div class="ios-section">
+                    <div class="ios-section-header">Lens</div>
+                    <div class="ios-card">
+                        <!-- Lens Modeli -->
+                        <div class="ios-row">
+                            <span class="ios-row-title">Lens Modeli</span>
+                            <div class="ios-input-wrap" style="max-width: 260px; width: 100%;">
+                                <input type="text" id="input-lens-model" class="ios-input"
+                                    placeholder="örn. 24mm f/1.78" spellcheck="false" style="max-width: 100%;">
+                            </div>
+                        </div>
+                        <!-- Lens Hazır Seçimleri -->
+                        <div class="ios-presets-container">
+                            <button type="button" class="ios-preset-chip" data-target="input-lens-model"
+                                data-val="Sony FE 50mm F1.2 GM">Sony FE 50mm F1.2 GM</button>
+                            <button type="button" class="ios-preset-chip" data-target="input-lens-model"
+                                data-val="iPhone 17 Pro back triple camera 24mm f/1.78">iPhone 17 Pro 24mm</button>
+                            <button type="button" class="ios-preset-chip" data-target="input-lens-model"
+                                data-val="24mm f/1.78">24mm f/1.78</button>
+                            <button type="button" class="ios-preset-chip" data-target="input-lens-model"
+                                data-val="FE 24-70mm F2.8 GM II">FE 24-70mm F2.8</button>
+                            <button type="button" class="ios-preset-chip" data-target="input-lens-model"
+                                data-val="RF 50mm F1.2L USM">RF 50mm F1.2</button>
+                        </div>
+
+                        <!-- Lens Markası -->
+                        <div class="ios-row">
+                            <span class="ios-row-title">Lens Markası</span>
+                            <div class="ios-input-wrap">
+                                <input type="text" id="input-lens-make" class="ios-input" placeholder="örn. Apple"
+                                    spellcheck="false">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grup 3: Optik ve Çözünürlük -->
+                <div class="ios-section">
+                    <div class="ios-section-header">Optik ve Çözünürlük</div>
+                    <div class="ios-card">
+
+                        <!-- Megapiksel Meta Veri Alanı -->
+                        <div class="ios-row">
+                            <div class="ios-row-title-wrap">
+                                <span class="ios-row-title">Megapiksel (MP)</span>
+                                <span class="ios-row-subtitle">Meta veri değeri</span>
+                            </div>
+                            <div class="ios-input-wrap">
+                                <input type="number" step="0.1" min="0.1" max="500" id="input-megapixels"
+                                    class="ios-input has-unit" placeholder="48">
+                                <span class="ios-input-unit">MP</span>
+                            </div>
+                        </div>
+                        <div class="ios-presets-container">
+                            <button type="button" class="ios-preset-chip" data-target="input-megapixels"
+                                data-val="12">12 MP</button>
+                            <button type="button" class="ios-preset-chip" data-target="input-megapixels"
+                                data-val="24">24 MP</button>
+                            <button type="button" class="ios-preset-chip" data-target="input-megapixels"
+                                data-val="48">48 MP</button>
+                            <button type="button" class="ios-preset-chip" data-target="input-megapixels"
+                                data-val="50">50 MP</button>
+                            <button type="button" class="ios-preset-chip" data-target="input-megapixels"
+                                data-val="100">100 MP</button>
+                        </div>
+
+                        <!-- Odak Uzaklığı (MM) Alanı -->
+                        <div class="ios-row">
+                            <div class="ios-row-title-wrap">
+                                <span class="ios-row-title">Odak Uzaklığı (MM)</span>
+                                <span class="ios-row-subtitle">EXIF rasyonel biçimi</span>
+                            </div>
+                            <div class="ios-input-wrap">
+                                <input type="number" step="0.1" min="1" max="2000" id="input-focal-length"
+                                    class="ios-input has-unit" placeholder="24">
+                                <span class="ios-input-unit">mm</span>
+                            </div>
+                        </div>
+                        <!-- Odak Uzaklığı Hazır Seçimleri -->
+                        <div class="ios-presets-container">
+                            <button type="button" class="ios-preset-chip" data-target="input-focal-length"
+                                data-val="13">13 mm</button>
+                            <button type="button" class="ios-preset-chip" data-target="input-focal-length"
+                                data-val="24">24 mm</button>
+                            <button type="button" class="ios-preset-chip" data-target="input-focal-length"
+                                data-val="28">28 mm</button>
+                            <button type="button" class="ios-preset-chip" data-target="input-focal-length"
+                                data-val="35">35 mm</button>
+                            <button type="button" class="ios-preset-chip" data-target="input-focal-length"
+                                data-val="50">50 mm</button>
+                            <button type="button" class="ios-preset-chip" data-target="input-focal-length"
+                                data-val="85">85 mm</button>
+                            <button type="button" class="ios-preset-chip" data-target="input-focal-length"
+                                data-val="120">120 mm</button>
+                        </div>
+
+                    </div>
+                    <div class="ios-section-footer">
+                        Megapiksel meta veri değerini değiştirmek görüntüyü yeniden boyutlandırmaz veya piksel
+                        verilerini bozmaz.
+                    </div>
+                </div>
+
+                <!-- Grup 4: Öncesi / Sonrası Karşılaştırması -->
+                <div class="ios-section">
+                    <div class="ios-section-header">Öncesi / Sonrası Karşılaştırması</div>
+                    <div class="ios-card">
+                        <div class="comparison-grid">
+
+                            <!-- Orijinal Sütunu -->
+                            <div class="comparison-col">
+                                <div class="comparison-col-header">
+                                    <span>Orijinal</span>
+                                </div>
+                                <div class="comparison-item">
+                                    <div class="comparison-label">Kamera</div>
+                                    <div id="diff-orig-camera" class="comparison-val">Apple</div>
+                                </div>
+                                <div class="comparison-item">
+                                    <div class="comparison-label">Model</div>
+                                    <div id="diff-orig-model" class="comparison-val">iPhone 15 Pro</div>
+                                </div>
+                                <div class="comparison-item">
+                                    <div class="comparison-label">Lens</div>
+                                    <div id="diff-orig-lens" class="comparison-val">24mm f/1.78</div>
+                                </div>
+                                <div class="comparison-item">
+                                    <div class="comparison-label">Megapiksel</div>
+                                    <div id="diff-orig-mp" class="comparison-val">12.19 MP</div>
+                                </div>
+                                <div class="comparison-item">
+                                    <div class="comparison-label">Odak Uzaklığı</div>
+                                    <div id="diff-orig-fl" class="comparison-val">24 mm</div>
+                                </div>
+                            </div>
+
+                            <!-- Güncellenmiş Sütunu -->
+                            <div class="comparison-col">
+                                <div class="comparison-col-header">
+                                    <span>Güncel</span>
+                                    <span id="diff-changed-badge" class="ios-badge ios-badge-blue">Canlı</span>
+                                </div>
+                                <div class="comparison-item">
+                                    <div class="comparison-label">Kamera</div>
+                                    <div id="diff-edit-camera" class="comparison-val diff-changed">Apple</div>
+                                </div>
+                                <div class="comparison-item">
+                                    <div class="comparison-label">Model</div>
+                                    <div id="diff-edit-model" class="comparison-val diff-changed">iPhone 17 Pro</div>
+                                </div>
+                                <div class="comparison-item">
+                                    <div class="comparison-label">Lens</div>
+                                    <div id="diff-edit-lens" class="comparison-val diff-changed">24mm f/1.78</div>
+                                </div>
+                                <div class="comparison-item">
+                                    <div class="comparison-label">Megapiksel</div>
+                                    <div id="diff-edit-mp" class="comparison-val diff-changed">48 MP</div>
+                                </div>
+                                <div class="comparison-item">
+                                    <div class="comparison-label">Odak Uzaklığı</div>
+                                    <div id="diff-edit-fl" class="comparison-val diff-changed">24 mm</div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="ios-section-footer">
+                        Diğer tüm teknik meta veriler (ISO, enstantane, çekim tarihi, renk profili) korunur.
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- iOS Stili Sabit Alt Eylem Çubuğu -->
+    <footer id="bottom-action-bar" class="ios-bottom-bar" style="display: none;">
+        <div class="ios-bottom-bar-inner">
+            <button id="save-image-btn" class="ios-btn ios-btn-liquid-glass ios-btn-water-drop">
+                <span id="save-btn-spinner" class="ios-spinner" style="display: none;"></span>
+                <span id="save-btn-icon" class="save-btn-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2z"></path>
+                        <polyline points="16 12 12 16 8 12"></polyline>
+                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                    </svg>
+                </span>
+                <span id="save-btn-text">Galeriye Kaydet</span>
+            </button>
+        </div>
+        <div class="quality-guarantee-note">
+            <span>🔒 %100 Kayıpsız EXIF Değişimi · Orijinal Pikseller Dokunulmadan Korunur</span>
+        </div>
+    </footer>
+
+    <!-- Detaylı EXIF İnceleyici Modal Sayfası -->
+    <div id="inspector-modal-overlay" class="ios-modal-overlay">
+        <div class="ios-modal">
+            <div class="ios-modal-header">
+                <h2 class="ios-modal-title">Detaylı Meta Veri İnceleyici</h2>
+                <button id="inspector-modal-close" class="ios-modal-close" aria-label="Kapat">✕</button>
+            </div>
+            <div id="inspector-modal-body" class="ios-modal-body">
+                <!-- IOSInspector.js tarafından enjekte edilir -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Uygulama İçi Galeriye Kaydetme Modalı -->
+    <div id="save-modal-overlay" class="ios-modal-overlay" style="display: none;">
+        <div class="ios-modal save-modal">
+            <div class="ios-modal-header">
+                <div class="save-modal-header-title">
+                    <span class="save-modal-badge">✓ Doğrulandı</span>
+                    <h2 class="ios-modal-title">Fotoğraf Hazır</h2>
+                </div>
+                <button id="save-modal-close" class="ios-modal-close" aria-label="Kapat">✕</button>
+            </div>
+            <div id="save-modal-body" class="ios-modal-body save-modal-body">
+                <div class="save-modal-preview-wrapper">
+                    <img id="save-modal-image" class="save-modal-image" src="" alt="Kaydedilen Fotoğraf">
+                    <div class="save-modal-hold-hint">
+                        <span>📱 <b>Galeriye Eklemek İçin:</b> Fotoğrafa parmağınızı basılı tutup <b>"Fotoğraflara
+                                Ekle"</b> seçeneğine dokunun.</span>
+                    </div>
+                </div>
+
+                <div class="save-modal-actions">
+                    <button id="save-modal-share-btn" class="ios-btn ios-btn-liquid-glass ios-btn-water-drop"
+                        type="button">
+                        <span class="water-drop-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.3">
+                                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                                <polyline points="16 6 12 2 8 6"></polyline>
+                                <line x1="12" y1="2" x2="12" y2="15"></line>
+                            </svg>
+                        </span>
+                        <span>Galeriye Aktar / Paylaş</span>
+                    </button>
+                    <button id="save-modal-download-btn" class="ios-btn ios-btn-subtle ios-btn-sm" type="button">
+                        <span>💾 Dosya Olarak İndir</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Yerel Kütüphaneler -->
+    <script src="vendor/exifr.full.umd.js"></script>
+    <script src="vendor/piexif.js"></script>
+    <script src="vendor/heic2any.min.js"></script>
+
+    <!-- Uygulama Mantığı -->
+    <script type="module" src="js/app.js?v=4.7"></script>
+</body>
+
+</html>
